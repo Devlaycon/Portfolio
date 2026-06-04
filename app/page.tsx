@@ -1,7 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import images from "@/lib/images";
+import {
+  fadeUp,
+  blurFade,
+  heroRise,
+  staggerContainer,
+  cardFadeUp,
+  skillTag,
+  VIEWPORT,
+} from "@/lib/animations";
 
 type Category = "all" | "branding" | "posters" | "social" | "merch" | "sports";
 
@@ -78,17 +88,53 @@ export default function Home() {
       </nav>
 
       <header className="wrap">
-        <div className="eyebrow">Graphic Designer &amp; Content Creator</div>
+        <motion.div
+          className="eyebrow"
+          variants={heroRise}
+          initial="hidden"
+          animate="visible"
+          custom={0.1}
+        >
+          Graphic Designer &amp; Content Creator
+        </motion.div>
         <h1>
-          <span className="l1">Oshioke David</span>
-          <span className="l2">Oyarekhua</span>
+          <motion.span
+            className="l1"
+            variants={heroRise}
+            initial="hidden"
+            animate="visible"
+            custom={0.2}
+          >
+            Oshioke David
+          </motion.span>
+          <motion.span
+            className="l2"
+            variants={heroRise}
+            initial="hidden"
+            animate="visible"
+            custom={0.34}
+          >
+            Oyarekhua
+          </motion.span>
         </h1>
-        <p className="lede">
+        <motion.p
+          className="lede"
+          variants={heroRise}
+          initial="hidden"
+          animate="visible"
+          custom={0.5}
+        >
           I design <b>bold, scroll-stopping visuals</b>: posters, social
           content, merch and full brand systems for student clubs, brands and
           creators. Currently studying Computer Science (Honours) at UTS.
-        </p>
-        <div className="hero-cta">
+        </motion.p>
+        <motion.div
+          className="hero-cta"
+          variants={heroRise}
+          initial="hidden"
+          animate="visible"
+          custom={0.64}
+        >
           <a href="#work" className="btn btn-primary">
             View Work
           </a>
@@ -98,7 +144,7 @@ export default function Home() {
           >
             Get in Touch
           </a>
-        </div>
+        </motion.div>
       </header>
 
       <div className="strip">
@@ -121,8 +167,24 @@ export default function Home() {
       <section className="sec wrap" id="work">
         <div className="sec-head">
           <div>
-            <div className="sec-num">01 · SELECTED WORK</div>
-            <h2 className="sec-title">A look at what I make</h2>
+            <motion.div
+              className="sec-num"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={VIEWPORT}
+            >
+              01 · SELECTED WORK
+            </motion.div>
+            <motion.h2
+              className="sec-title"
+              variants={blurFade}
+              initial="hidden"
+              whileInView="visible"
+              viewport={VIEWPORT}
+            >
+              A look at what I make
+            </motion.h2>
           </div>
           <div className="filters">
             {CATS.map((c) => (
@@ -139,99 +201,165 @@ export default function Home() {
         <p style={{ color: "var(--muted)", margin: "-26px 0 30px", fontSize: ".95rem" }}>
           Tap any piece for the brief and full image.
         </p>
-        <div className="grid">
-          {filtered.map((p) => (
-            <div
-              key={p.title}
-              className="card"
-              style={{ ["--card-color" as string]: p.color }}
-              onClick={() => setLbProject(p)}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={p.img} alt={p.title} loading="lazy" />
-              <div className="plus">&#43;</div>
-              <div className="meta">
-                <h4>{p.title}</h4>
-                <p>{p.cat}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <motion.div
+          className="grid"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={VIEWPORT}
+        >
+          <AnimatePresence mode="popLayout">
+            {filtered.map((p) => (
+              <motion.div
+                key={p.title}
+                className="card"
+                style={{ ["--card-color" as string]: p.color }}
+                onClick={() => setLbProject(p)}
+                variants={cardFadeUp}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                layout
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={p.img} alt={p.title} loading="lazy" />
+                <div className="plus">&#43;</div>
+                <div className="meta">
+                  <h4>{p.title}</h4>
+                  <p>{p.cat}</p>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       </section>
 
       <section className="sec wrap" id="about">
         <div className="sec-head">
           <div>
-            <div className="sec-num">02 · ABOUT</div>
-            <h2 className="sec-title">Designer who ships</h2>
+            <motion.div
+              className="sec-num"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={VIEWPORT}
+            >
+              02 · ABOUT
+            </motion.div>
+            <motion.h2
+              className="sec-title"
+              variants={blurFade}
+              initial="hidden"
+              whileInView="visible"
+              viewport={VIEWPORT}
+            >
+              Designer who ships
+            </motion.h2>
           </div>
         </div>
         <div className="about-grid">
-          <div>
-            <p>
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT}
+          >
+            <motion.p variants={fadeUp}>
               I&apos;m a graphic designer and content creator, and a second-year{" "}
               <b>Computer Science (Honours)</b> student at UTS. I lead creative
               and marketing work across several student organisations, including
               the <b>Engineering Society</b>, the{" "}
               <b>Student Representative Group</b>, and{" "}
               <b>Google Developer Group on Campus</b>.
-            </p>
-            <p>
+            </motion.p>
+            <motion.p variants={fadeUp}>
               My work spans <b>full brand identities</b>, event posters, social
               campaigns, Instagram reels and <b>merch lines</b>. I care about
               clarity, consistency, and making things people actually want to
               look at: work that&apos;s on-brand and built to connect with
               student audiences.
-            </p>
-            <p>
+            </motion.p>
+            <motion.p variants={fadeUp}>
               As a former <b>Peer Mentor</b> and current{" "}
               <b>Student Board Director</b>, I also understand the people behind
               the screen: what students respond to and how good communication
               keeps a community alive.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
           <div className="skills">
             <h5>What I work with</h5>
-            <div className="skill-tags">
+            <motion.div
+              className="skill-tags"
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={VIEWPORT}
+            >
               {[
                 "Photoshop", "Illustrator", "Canva", "Adobe Express", "CapCut",
                 "Figma", "Instagram", "Discord", "Copywriting", "Brand Identity", "Reels / Short-form",
               ].map((s) => (
-                <span key={s}>{s}</span>
+                <motion.span key={s} variants={skillTag}>{s}</motion.span>
               ))}
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       <section className="contact" id="contact">
         <div className="wrap">
-          <div className="sec-num">03 · LET&apos;S WORK TOGETHER</div>
-          <h2>
+          <motion.div
+            className="sec-num"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT}
+          >
+            03 · LET&apos;S WORK TOGETHER
+          </motion.div>
+          <motion.h2
+            variants={blurFade}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT}
+          >
             <a href="mailto:Oshioke.d.oyarekhua@student.uts.edu.au">
               GET IN TOUCH
             </a>
-          </h2>
-          <p style={{ color: "var(--muted)", maxWidth: 520, margin: "24px auto 0", fontSize: "1.05rem" }}>
+          </motion.h2>
+          <motion.p
+            style={{ color: "var(--muted)", maxWidth: 520, margin: "24px auto 0", fontSize: "1.05rem" }}
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT}
+          >
             Open to design roles, freelance projects and creative collaborations.
             The quickest look at what I&apos;m building is on Instagram, or reach
             me directly below.
-          </p>
-          <div className="socials">
-            <a
+          </motion.p>
+          <motion.div
+            className="socials"
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT}
+          >
+            <motion.a
+              variants={fadeUp}
               href="https://www.instagram.com/designer_laycon/"
               target="_blank"
               rel="noopener noreferrer"
             >
               Instagram &#8599;
-            </a>
-            <a href="#" target="_blank" rel="noopener noreferrer">
+            </motion.a>
+            <motion.a variants={fadeUp} href="#" target="_blank" rel="noopener noreferrer">
               LinkedIn &#8599;
-            </a>
-            <a href="mailto:Oshioke.d.oyarekhua@student.uts.edu.au">
+            </motion.a>
+            <motion.a variants={fadeUp} href="mailto:Oshioke.d.oyarekhua@student.uts.edu.au">
               Email &#8599;
-            </a>
-          </div>
+            </motion.a>
+          </motion.div>
         </div>
       </section>
 
@@ -243,42 +371,54 @@ export default function Home() {
       </footer>
 
       {/* Lightbox */}
-      {lbProject && (
-        <div
-          className="lb open"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setLbProject(null);
-          }}
-        >
-          <button
-            className="lb-close"
-            aria-label="Close"
-            onClick={() => setLbProject(null)}
+      <AnimatePresence>
+        {lbProject && (
+          <motion.div
+            className="lb open"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setLbProject(null);
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
           >
-            &times;
-          </button>
-          <div className="lb-inner">
-            <div className="lb-img">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={lbProject.img} alt={lbProject.title} />
-            </div>
-            <div className="lb-info">
-              <span
-                className="lb-cat"
-                style={{ background: lbProject.color }}
-              >
-                {lbProject.cat}
-              </span>
-              <h3>{lbProject.title}</h3>
-              <p className="brief">{lbProject.brief}</p>
-              <div className="lb-role">Role</div>
-              <div className="lb-role">
-                <b>{lbProject.role}</b>
+            <button
+              className="lb-close"
+              aria-label="Close"
+              onClick={() => setLbProject(null)}
+            >
+              &times;
+            </button>
+            <motion.div
+              className="lb-inner"
+              initial={{ scale: 0.96, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.96, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.25, 0.4, 0.25, 1] }}
+            >
+              <div className="lb-img">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={lbProject.img} alt={lbProject.title} />
               </div>
-            </div>
-          </div>
-        </div>
-      )}
+              <div className="lb-info">
+                <span
+                  className="lb-cat"
+                  style={{ background: lbProject.color }}
+                >
+                  {lbProject.cat}
+                </span>
+                <h3>{lbProject.title}</h3>
+                <p className="brief">{lbProject.brief}</p>
+                <div className="lb-role">Role</div>
+                <div className="lb-role">
+                  <b>{lbProject.role}</b>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
