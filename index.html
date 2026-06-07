@@ -38,8 +38,7 @@
   .nav-links a:hover{color:var(--ink);}
   @media(max-width:680px){.nav-links{display:none;}}
 
-  header{padding:120px 0 80px;position:relative;}
-  header::after{content:"";position:absolute;top:-10%;right:-5%;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(255,59,64,.16),transparent 65%);pointer-events:none;z-index:-1;}
+  header{padding:120px 0 80px;position:relative;z-index:2;}
   .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:30px;opacity:0;animation:rise .8s .1s forwards;}
   .eyebrow::before{content:"";width:28px;height:1px;background:var(--accent);}
   h1{font-family:var(--display);font-weight:800;font-size:clamp(2.8rem,9vw,6.6rem);line-height:.95;letter-spacing:-.03em;}
@@ -47,6 +46,8 @@
   h1 .l2{display:block;color:var(--accent);opacity:0;animation:rise .9s .34s forwards;}
   .lede{max-width:560px;margin-top:34px;font-size:1.15rem;color:var(--muted);opacity:0;animation:rise .9s .5s forwards;}
   .lede b{color:var(--ink);font-weight:600;}
+  .typewriter-cursor{display:inline-block;width:2px;height:1em;background:var(--muted);margin-left:4px;animation:blink .6s infinite;}
+  @keyframes blink{0%,50%{opacity:1;}51%,100%{opacity:0;}}
   .hero-cta{margin-top:42px;display:flex;gap:16px;flex-wrap:wrap;opacity:0;animation:rise .9s .64s forwards;}
   .btn{font-family:var(--body);font-weight:600;font-size:.95rem;padding:14px 26px;border-radius:100px;text-decoration:none;transition:transform .2s,background .25s,color .25s;display:inline-block;}
   .btn-primary{background:var(--accent);color:var(--accent-ink);}
@@ -55,6 +56,10 @@
   .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
   @keyframes rise{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
 
+  .hero-section{position:relative;overflow:hidden;}
+  #shader-bg{position:absolute;right:0;top:0;bottom:0;width:45%;z-index:0;}
+  #shader-bg canvas{display:block;width:100%!important;height:100%!important;}
+  .hero-overlay{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to right,var(--bg) 45%,rgba(12,7,8,.85) 65%,transparent),linear-gradient(to bottom,transparent 55%,var(--bg));}
   .strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap;padding:18px 0;background:var(--bg-soft);}
   .strip-track{display:inline-block;animation:scroll 28s linear infinite;}
   .strip-track span{font-family:var(--display);font-weight:600;font-size:1.05rem;color:var(--muted);margin:0 26px;}
@@ -97,7 +102,12 @@
   .lb-inner{display:flex;gap:30px;max-width:1100px;width:100%;max-height:88vh;align-items:center;}
   @media(max-width:820px){.lb-inner{flex-direction:column;gap:18px;overflow:auto;}}
   .lb-img{flex:1.4;min-width:0;display:flex;align-items:center;justify-content:center;}
-  .lb-img img{max-width:100%;max-height:84vh;border-radius:12px;display:block;border:1px solid var(--line);}
+  .lb-img img{max-width:100%;max-height:84vh;border-radius:12px;display:block;border:1px solid var(--line);animation:slideIn .4s ease-out;}
+  .lb-img img.slide-left{animation:slideOutRight .4s ease-in;}
+  .lb-img img.slide-right{animation:slideOutLeft .4s ease-in;}
+  @keyframes slideIn{from{opacity:0;transform:translateX(0);}to{opacity:1;transform:translateX(0);}}
+  @keyframes slideOutLeft{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(-40px);}}
+  @keyframes slideOutRight{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(40px);}}
   @media(max-width:820px){.lb-img img{max-height:58vh;}}
   .lb-info{flex:1;min-width:240px;}
   .lb-cat{display:inline-block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;padding:6px 12px;border-radius:100px;color:#fff;margin-bottom:18px;}
@@ -107,6 +117,12 @@
   .lb-role b{color:var(--ink);text-transform:none;letter-spacing:0;font-size:.98rem;font-weight:600;}
   .lb-close{position:fixed;top:22px;right:26px;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--bg-soft);color:var(--ink);font-size:1.3rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
   .lb-close:hover{border-color:var(--accent);color:var(--accent);transform:rotate(90deg);}
+  .lb-nav{position:fixed;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:50%;border:1px solid var(--line);background:var(--bg-soft);color:var(--ink);font-size:1.3rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;z-index:100;}
+  .lb-nav:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-50%) scale(1.1);}
+  .lb-nav.disabled{opacity:.3;cursor:not-allowed;pointer-events:none;}
+  .lb-prev{left:26px;}
+  .lb-next{right:26px;}
+  @media(max-width:820px){.lb-nav{display:none;}}
 
   .about-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:60px;align-items:start;}
   @media(max-width:820px){.about-grid{grid-template-columns:1fr;gap:40px;}}
@@ -137,17 +153,21 @@
   </div>
 </nav>
 
-<header class="wrap">
+<section class="hero-section">
+  <div id="shader-bg" data-us-project="cbmTT38A0CcuYxeiyj5H"></div>
+  <div class="hero-overlay"></div>
+  <header class="wrap">
   <div class="eyebrow">Graphic Designer &amp; Content Creator</div>
   <h1><span class="l1">Oshioke David</span><span class="l2">Oyarekhua</span></h1>
   <!-- EDIT: your one-line pitch -->
-  <p class="lede">I design <b>bold, scroll-stopping visuals</b>: posters, social content, merch and full brand systems for student clubs, brands and creators. Currently studying Computer Science (Honours) at UTS.</p>
+  <p class="lede" id="typewriter"></p>
   <div class="hero-cta">
     <a href="#work" class="btn btn-primary">View Work</a>
     <!-- EDIT: your email -->
-    <a href="mailto:Oshioke.d.oyarekhua@student.uts.edu.au" class="btn btn-ghost">Get in Touch</a>
+    <a href="mailto:youremail@example.com" class="btn btn-ghost">Get in Touch</a>
   </div>
 </header>
+</section>
 
 <div class="strip"><div class="strip-track">
   <span>Brand Identity <b>&#10022;</b></span><span>Poster Design <b>&#10022;</b></span><span>Social Media <b>&#10022;</b></span><span>Merch &amp; Apparel <b>&#10022;</b></span><span>Reels &amp; Video <b>&#10022;</b></span><span>Campaigns <b>&#10022;</b></span>
@@ -194,22 +214,24 @@
   <div class="wrap">
     <div class="sec-num">03 · LET'S WORK TOGETHER</div>
     <!-- EDIT: your email -->
-    <h2><a href="mailto:Oshioke.d.oyarekhua@student.uts.edu.au">GET IN TOUCH</a></h2>
+    <h2>Say hello,<br><a href="mailto:youremail@example.com">youremail@example.com</a></h2>
     <p style="color:var(--muted);max-width:520px;margin:24px auto 0;font-size:1.05rem">Open to design roles, freelance projects and creative collaborations. The quickest look at what I'm building is on Instagram, or reach me directly below.</p>
     <div class="socials">
       <!-- EDIT: your links -->
       <a href="https://www.instagram.com/designer_laycon/" target="_blank" rel="noopener">Instagram &#8599;</a>
       <a href="#" target="_blank" rel="noopener">LinkedIn &#8599;</a>
-      <a href="mailto:Oshioke.d.oyarekhua@student.uts.edu.au">Email &#8599;</a>
+      <a href="mailto:youremail@example.com">Email &#8599;</a>
     </div>
   </div>
 </section>
 
-<footer><div class="wrap">&copy; <span id="yr"></span> Oshioke David Oyarekhua. Designed &amp; built by Dev.Dave.</div></footer>
+<footer><div class="wrap">&copy; <span id="yr"></span> Oshioke David Oyarekhua. Designed &amp; built by me.</div></footer>
 
 <!-- lightbox -->
 <div class="lb" id="lb">
   <button class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous">&#10094;</button>
+  <button class="lb-nav lb-next" id="lbNext" aria-label="Next">&#10095;</button>
   <div class="lb-inner">
     <div class="lb-img"><img id="lbImg" src="" alt=""></div>
     <div class="lb-info">
@@ -221,6 +243,87 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Typewriter Effect with HTML support
+  class Typewriter {
+    constructor(elementId, options = {}) {
+      this.element = document.getElementById(elementId);
+      this.segments = options.segments || [];
+      this.speed = options.speed || 50;
+      this.initialDelay = options.initialDelay || 500;
+      this.showCursor = options.showCursor !== false;
+      
+      this.currentSegmentIndex = 0;
+      this.currentCharIndex = 0;
+      this.displaySegments = [];
+      
+      this.init();
+    }
+    
+    init() {
+      if (!this.element) return;
+      this.displaySegments = this.segments.map(seg => ({ text: seg.text, bold: seg.bold, display: "" }));
+      this.render();
+      setTimeout(() => this.type(), this.initialDelay);
+    }
+    
+    type() {
+      if (this.currentSegmentIndex < this.displaySegments.length) {
+        const currentSegment = this.displaySegments[this.currentSegmentIndex];
+        const sourceSegment = this.segments[this.currentSegmentIndex];
+        
+        if (this.currentCharIndex < sourceSegment.text.length) {
+          currentSegment.display += sourceSegment.text[this.currentCharIndex];
+          this.currentCharIndex++;
+          this.render();
+          setTimeout(() => this.type(), this.speed);
+        } else {
+          this.currentSegmentIndex++;
+          this.currentCharIndex = 0;
+          this.type();
+        }
+      } else {
+        this.render();
+      }
+    }
+    
+    render() {
+      let html = "";
+      this.displaySegments.forEach(seg => {
+        if (seg.bold) {
+          html += `<b>${this.escapeHtml(seg.display)}</b>`;
+        } else {
+          html += this.escapeHtml(seg.display);
+        }
+      });
+      
+      if (this.showCursor) {
+        html += `<span class="typewriter-cursor"></span>`;
+      }
+      
+      this.element.innerHTML = html;
+    }
+    
+    escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  }
+  
+  // Initialize typewriter with segments (text + bold parts)
+  new Typewriter('typewriter', {
+    segments: [
+      { text: "I design ", bold: false },
+      { text: "bold, scroll-stopping visuals", bold: true },
+      { text: ": posters, social content, merch and full brand systems for student clubs, brands and creators. Currently studying Computer Science (Honours) at UTS.", bold: false }
+    ],
+    speed: 40,
+    initialDelay: 800,
+    showCursor: true
+  });
+</script>
 
 <script>
   document.getElementById('yr').textContent = new Date().getFullYear();
@@ -288,6 +391,11 @@
   const lbTitle = document.getElementById('lbTitle');
   const lbBrief = document.getElementById('lbBrief');
   const lbRole = document.getElementById('lbRole');
+  const lbPrev = document.getElementById('lbPrev');
+  const lbNext = document.getElementById('lbNext');
+  
+  let currentProjectIndex = -1;
+  let currentCategory = 'all';
 
   function openLB(p){
     lbImg.src = p.img; lbImg.alt = p.title;
@@ -297,13 +405,62 @@
     lbRole.textContent = p.role;
     lb.classList.add('open');
     document.body.style.overflow = 'hidden';
+    
+    // Find the project index in the filtered list
+    const filtered = PROJECTS.filter(proj => currentCategory === "all" || proj.cat === currentCategory);
+    currentProjectIndex = filtered.findIndex(proj => proj.title === p.title);
+    updateNavButtons();
   }
+  
+  function updateNavButtons(){
+    const filtered = PROJECTS.filter(p => currentCategory === "all" || p.cat === currentCategory);
+    lbPrev.classList.toggle('disabled', currentProjectIndex <= 0);
+    lbNext.classList.toggle('disabled', currentProjectIndex >= filtered.length - 1);
+  }
+  
+  function navigateProject(direction){
+    const filtered = PROJECTS.filter(p => currentCategory === "all" || p.cat === currentCategory);
+    let newIndex = currentProjectIndex + direction;
+    
+    if(newIndex >= 0 && newIndex < filtered.length){
+      // Apply slide out animation
+      const animationClass = direction > 0 ? 'slide-left' : 'slide-right';
+      lbImg.classList.add(animationClass);
+      
+      // Wait for animation to complete, then update content
+      setTimeout(() => {
+        currentProjectIndex = newIndex;
+        lbImg.classList.remove(animationClass);
+        
+        const project = filtered[newIndex];
+        lbImg.src = project.img;
+        lbImg.alt = project.title;
+        lbCat.textContent = project.cat;
+        lbCat.style.background = project.color;
+        lbTitle.textContent = project.title;
+        lbBrief.textContent = project.brief;
+        lbRole.textContent = project.role;
+        
+        updateNavButtons();
+      }, 400);
+    }
+  }
+  
   function closeLB(){ lb.classList.remove('open'); document.body.style.overflow=''; }
   document.getElementById('lbClose').addEventListener('click', closeLB);
+  lbPrev.addEventListener('click', (e) => { e.stopPropagation(); navigateProject(-1); });
+  lbNext.addEventListener('click', (e) => { e.stopPropagation(); navigateProject(1); });
   lb.addEventListener('click', e => { if(e.target === lb) closeLB(); });
-  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLB(); });
+  document.addEventListener('keydown', e => { 
+    if(e.key === 'Escape') closeLB();
+    if(lb.classList.contains('open')){
+      if(e.key === 'ArrowLeft') navigateProject(-1);
+      if(e.key === 'ArrowRight') navigateProject(1);
+    }
+  });
 
   function render(cat){
+    currentCategory = cat;
     grid.innerHTML = "";
     PROJECTS.filter(p => cat === "all" || p.cat === cat).forEach(p => {
       const card = document.createElement('div');
@@ -325,5 +482,6 @@
   });
   render('all');
 </script>
+<script type="text/javascript">!function(){var u=window.UnicornStudio;if(u&&u.init){if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){u.init()})}else{u.init()}}else{window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.1.12/dist/unicornStudio.umd.js",i.onload=function(){if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){UnicornStudio.init()})}else{UnicornStudio.init()}},(document.head||document.body).appendChild(i)}}();</script>
 </body>
 </html>
