@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import images from "@/lib/images";
 import {
@@ -58,13 +58,90 @@ const CATS: { label: string; value: Category }[] = [
   { label: "Sports", value: "sports" },
 ];
 
+const LEDE_SEGMENTS = [
+  { text: "I design ", bold: false },
+  { text: "bold, scroll-stopping visuals", bold: true },
+  { text: ": posters, social content, merch and full brand systems for student clubs, brands and creators. Currently studying Computer Science (Honours) at UTS.", bold: false },
+];
+const LEDE_FULL = LEDE_SEGMENTS.reduce((acc, s) => acc + s.text, "");
+
 export default function Home() {
   const [activeCat, setActiveCat] = useState<Category>("all");
   const [lbProject, setLbProject] = useState<Project | null>(null);
+  const [lbIndex, setLbIndex] = useState(-1);
+  const [slideDir, setSlideDir] = useState<"left" | "right" | null>(null);
+  const [ledeCount, setLedeCount] = useState(0);
+
+  // Typewriter effect on hero lede
+  useEffect(() => {
+    let iv: ReturnType<typeof setInterval>;
+    const t = setTimeout(() => {
+      iv = setInterval(() => {
+        setLedeCount((c) => {
+          if (c >= LEDE_FULL.length) { clearInterval(iv); return c; }
+          return c + 1;
+        });
+      }, 40);
+    }, 800);
+    return () => { clearTimeout(t); clearInterval(iv); };
+  }, []);
 
   const filtered = PROJECTS.filter(
     (p) => activeCat === "all" || p.cat === activeCat
   );
+
+  // Navigate lightbox prev/next
+  const navigate = useCallback(
+    (dir: number) => {
+      const list = PROJECTS.filter((p) => activeCat === "all" || p.cat === activeCat);
+      const newIndex = lbIndex + dir;
+      if (newIndex < 0 || newIndex >= list.length) return;
+      setSlideDir(dir > 0 ? "left" : "right");
+      setTimeout(() => {
+        setLbIndex(newIndex);
+        setLbProject(list[newIndex]);
+        setSlideDir(null);
+      }, 400);
+    },
+    [lbIndex, activeCat]
+  );
+
+  // Keyboard: Escape to close, arrows to navigate
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (!lbProject) return;
+      if (e.key === "Escape") closeLb();
+      if (e.key === "ArrowLeft") navigate(-1);
+      if (e.key === "ArrowRight") navigate(1);
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lbProject, navigate]);
+
+  function openProject(p: Project) {
+    const idx = filtered.findIndex((proj) => proj.title === p.title);
+    setLbIndex(idx);
+    setLbProject(p);
+    setSlideDir(null);
+  }
+
+  function closeLb() {
+    setLbProject(null);
+    setLbIndex(-1);
+    setSlideDir(null);
+  }
+
+  function renderLede() {
+    let pos = 0;
+    return LEDE_SEGMENTS.map((seg, i) => {
+      const end = pos + seg.text.length;
+      const visible = LEDE_FULL.slice(pos, Math.min(ledeCount, end));
+      pos = end;
+      if (!visible) return null;
+      return seg.bold ? <b key={i}>{visible}</b> : <span key={i}>{visible}</span>;
+    });
+  }
 
   return (
     <>
@@ -87,65 +164,70 @@ export default function Home() {
         </div>
       </nav>
 
-      <header className="wrap">
-        <motion.div
-          className="eyebrow"
-          variants={heroRise}
-          initial="hidden"
-          animate="visible"
-          custom={0.1}
-        >
-          Graphic Designer &amp; Content Creator
-        </motion.div>
-        <h1>
-          <motion.span
-            className="l1"
+      <section className="hero-section">
+        <div id="shader-bg" data-us-project="cbmTT38A0CcuYxeiyj5H" />
+        <div className="hero-overlay" />
+        <header className="wrap">
+          <motion.div
+            className="eyebrow"
             variants={heroRise}
             initial="hidden"
             animate="visible"
-            custom={0.2}
+            custom={0.1}
           >
-            Oshioke David
-          </motion.span>
-          <motion.span
-            className="l2"
+            Graphic Designer &amp; Content Creator
+          </motion.div>
+          <h1>
+            <motion.span
+              className="l1"
+              variants={heroRise}
+              initial="hidden"
+              animate="visible"
+              custom={0.2}
+            >
+              Oshioke David
+            </motion.span>
+            <motion.span
+              className="l2"
+              variants={heroRise}
+              initial="hidden"
+              animate="visible"
+              custom={0.34}
+            >
+              Oyarekhua
+            </motion.span>
+          </h1>
+          <motion.p
+            className="lede"
             variants={heroRise}
             initial="hidden"
             animate="visible"
-            custom={0.34}
+            custom={0.5}
           >
-            Oyarekhua
-          </motion.span>
-        </h1>
-        <motion.p
-          className="lede"
-          variants={heroRise}
-          initial="hidden"
-          animate="visible"
-          custom={0.5}
-        >
-          I design <b>bold, scroll-stopping visuals</b>: posters, social
-          content, merch and full brand systems for student clubs, brands and
-          creators. Currently studying Computer Science (Honours) at UTS.
-        </motion.p>
-        <motion.div
-          className="hero-cta"
-          variants={heroRise}
-          initial="hidden"
-          animate="visible"
-          custom={0.64}
-        >
-          <a href="#work" className="btn btn-primary">
-            View Work
-          </a>
-          <a
-            href="mailto:Oshioke.d.oyarekhua@student.uts.edu.au"
-            className="btn btn-ghost"
+            {renderLede()}
+            {ledeCount < LEDE_FULL.length && (
+              <span className="typewriter-cursor" />
+            )}
+          </motion.p>
+          <motion.div
+            className="hero-cta"
+            variants={heroRise}
+            initial="hidden"
+            animate="visible"
+            custom={0.64}
           >
-            Get in Touch
-          </a>
-        </motion.div>
-      </header>
+            <a href="#work" className="btn btn-primary">
+              View Work
+            </a>
+            <a
+              href="mailto:Oshioke.d.oyarekhua@student.uts.edu.au"
+              className="btn btn-ghost"
+            >
+              Get in Touch
+            </a>
+          </motion.div>
+        </header>
+      </section>
 
       <div className="strip">
         <div className="strip-track">
@@ -214,7 +296,7 @@ export default function Home() {
                 key={p.title}
                 className="card"
                 style={{ ["--card-color" as string]: p.color }}
-                onClick={() => setLbProject(p)}
+                onClick={() => openProject(p)}
                 variants={cardFadeUp}
                 initial="hidden"
                 animate="visible"
@@ -376,7 +458,7 @@ export default function Home() {
           <motion.div
             className="lb open"
             onClick={(e) => {
-              if (e.target === e.currentTarget) setLbProject(null);
+              if (e.target === e.currentTarget) closeLb();
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -386,9 +468,25 @@ export default function Home() {
             <button
               className="lb-close"
               aria-label="Close"
-              onClick={() => setLbProject(null)}
+              onClick={closeLb}
             >
               &times;
+            </button>
+            <button
+              className="lb-nav lb-prev"
+              aria-label="Previous"
+              disabled={lbIndex <= 0}
+              onClick={(e) => { e.stopPropagation(); navigate(-1); }}
+            >
+              &#10094;
+            </button>
+            <button
+              className="lb-nav lb-next"
+              aria-label="Next"
+              disabled={lbIndex >= filtered.length - 1}
+              onClick={(e) => { e.stopPropagation(); navigate(1); }}
+            >
+              &#10095;
             </button>
             <motion.div
               className="lb-inner"
@@ -399,7 +497,17 @@ export default function Home() {
             >
               <div className="lb-img">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={lbProject.img} alt={lbProject.title} />
+                <img
+                  src={lbProject.img}
+                  alt={lbProject.title}
+                  className={
+                    slideDir === "left"
+                      ? "slide-left"
+                      : slideDir === "right"
+                      ? "slide-right"
+                      : ""
+                  }
+                />
               </div>
               <div className="lb-info">
                 <span
